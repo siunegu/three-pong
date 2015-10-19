@@ -44,6 +44,8 @@
             this.ballGeometry = ballGeometry;
             this.ballMaterial = ballMaterial;
             this.mesh = this.init();
+            this._velocity;
+            this._stopped;
             scene.add(this.mesh);
         }
 
@@ -80,9 +82,23 @@
             }
 
             if (this.isSideCollision()) {
-            		this._velocity.x *= -1
+            		console.log("is side collision")
+            		this._velocity.x *= -0.5;
             }
-            console.log(this.isSideCollision())
+            
+            if (this.isPastPaddle1()) {
+            		this._velocity.z = 0;            
+            		this._velocity.x = 0;            
+            }
+
+            if (this.isPastPaddle2()) {
+            		this._velocity.z = 0; 
+            		this._velocity.x = 0;             		           
+            }
+
+            if (this._stopped) {
+            	return;
+            }
 
             this.updateBallPosition()
         }
@@ -93,14 +109,6 @@
             // update the ball's position
             ballPos.x += this._velocity.x;
             ballPos.z += this._velocity.z;
-        }
-
-        isPastPaddle1() {
-            return ball.position.z > player1.position.z + 100;
-        }
-
-        isPastPaddle2() {
-            return ball.position.z < paddle2.position.z - 100;
         }
 
         hitBallBack(paddle) {
@@ -117,12 +125,19 @@
         }
 
         isSideCollision() {
-        		let ballX = ball.mesh.position.x
-        		// console.log("half field width " + FIELD_WIDTH / 2)
-        		// console.log(ballX - BALL_RADIUS)
+        		let ballX = ball.mesh.position.x,
+        				halfFieldWidth = FIELD_WIDTH / 2;
 
-        		return ballX + BALL_RADIUS >= FIELD_WIDTH || -ballX - BALL_RADIUS >= -FIELD_WIDTH
+        		return (ballX + BALL_RADIUS > halfFieldWidth) || (ballX - BALL_RADIUS < -halfFieldWidth)
         }
+
+        isPastPaddle1() {
+        		return ball.mesh.position.z > player1.position.z + 100
+        }
+
+        isPastPaddle2() {
+        		return ball.mesh.position.z < player2.position.z - 100
+        }        
     }
 
     // draw a paddle.
