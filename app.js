@@ -12,7 +12,7 @@
         ASPECT = WIDTH / HEIGHT,
         NEAR = 0.1,
         FAR = 10000,
-        FIELD_WIDTH = 800,
+        FIELD_WIDTH = 1000,
         FIELD_LENGTH = 2000,
         BALL_RADIUS = 20,
         PADDLE_WIDTH = 200,
@@ -53,7 +53,7 @@
             let ballGeometry = this.ballGeometry,
                 ballMaterial = this.ballMaterial,
                 mesh = new THREE.Mesh(ballGeometry, ballMaterial);
-
+                mesh.position.set(0, 0, 0);
             camera.lookAt(mesh.position);
 
             return mesh;
@@ -66,6 +66,10 @@
                 z: direction * 20
             }
             this._stopped = false
+        }
+
+        stopBall() {
+        		this._stopped = true
         }
 
         processBallMovement() {
@@ -83,17 +87,18 @@
 
             if (this.isSideCollision()) {
             		console.log("is side collision")
-            		this._velocity.x *= -0.5;
+            		this._velocity.x *= -0.3;
             }
             
             if (this.isPastPaddle1()) {
-            		this._velocity.z = 0;            
-            		this._velocity.x = 0;            
+            		console.log("is past player1")
+            		// this.stopBall();          
             }
 
             if (this.isPastPaddle2()) {
-            		this._velocity.z = 0; 
-            		this._velocity.x = 0;             		           
+
+			  		console.log("is past player2")
+            		// this.stopBall();          		           
             }
 
             if (this._stopped) {
@@ -109,6 +114,7 @@
             // update the ball's position
             ballPos.x += this._velocity.x;
             ballPos.z += this._velocity.z;
+            ballPos.y = -((ballPos.z - 1) * (ballPos.z - 1) / 2000) + 435;
         }
 
         hitBallBack(paddle) {
@@ -128,15 +134,15 @@
         		let ballX = ball.mesh.position.x,
         				halfFieldWidth = FIELD_WIDTH / 2;
 
-        		return (ballX + BALL_RADIUS > halfFieldWidth) || (ballX - BALL_RADIUS < -halfFieldWidth)
+        		return (ballX + BALL_RADIUS > halfFieldWidth ) || (ballX - BALL_RADIUS < -halfFieldWidth )
         }
 
         isPastPaddle1() {
-        		return ball.mesh.position.z > player1.position.z + 100
+					// return ball.mesh.position.z + BALL_RADIUS >=  ;
         }
 
         isPastPaddle2() {
-        		return ball.mesh.position.z < player2.position.z - 100
+        	// return ball.mesh.position.z + BALL_RADIUS > player2.position.z + 100;
         }        
     }
 
@@ -174,7 +180,7 @@
         document.body.appendChild(renderer.domElement);
 
         camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-        camera.position.set(0, 100, FIELD_LENGTH / 2 + 500);
+        camera.position.set(0, 250, FIELD_LENGTH / 2 + 600);
 
         scene = new THREE.Scene();
         scene.add(camera);
@@ -192,11 +198,12 @@
                 color: 0x0EE3FC
             })
         );
-        // console.log(ball.mesh.position.z += 1200)
+
         player1 = addPaddle();
-        player1.position.z = FIELD_LENGTH / 2;
+        player1.position.z = FIELD_LENGTH / 2 - 40;
+
         player2 = addPaddle();
-        player2.position.z = -FIELD_LENGTH / 2;
+        player2.position.z = -FIELD_LENGTH / 2 + 40;
 
         mainLight = new THREE.HemisphereLight(0xFFFFFF, 0x1c75a1);
         scene.add(mainLight);
