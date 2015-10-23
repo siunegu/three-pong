@@ -53,7 +53,7 @@
             let ballGeometry = this.ballGeometry,
                 ballMaterial = this.ballMaterial,
                 mesh = new THREE.Mesh(ballGeometry, ballMaterial);
-                mesh.position.set(0, 0, 0);
+            mesh.position.set(0, 0, 0);
             camera.lookAt(mesh.position);
 
             return mesh;
@@ -69,7 +69,7 @@
         }
 
         stopBall() {
-        		this._stopped = true
+            this._stopped = true
         }
 
         processBallMovement() {
@@ -77,32 +77,32 @@
                 this.startBallMovement();
             }
 
-            if (this.isPaddle1Collision()) {
+            if (this.isPaddle1Collision() && this.isAlignedWithPaddle(player1)) {
                 this.hitBallBack(player1);
             }
 
-            if (this.isPaddle2Collision()) {
+            if (this.isPaddle2Collision() && this.isAlignedWithPaddle(player2)) {
                 this.hitBallBack(player2);
             }
 
             if (this.isSideCollision()) {
-            		console.log("is side collision")
-            		this._velocity.x *= -0.3;
+                console.log("is side collision")
+                this._velocity.x *= -0.3;
             }
-            
+
             if (this.isPastPaddle1()) {
-            		console.log("is past player1")
-            		// this.stopBall();          
+                console.log("is past player1")
+                // this.stopBall();          
             }
 
             if (this.isPastPaddle2()) {
 
-			  		console.log("is past player2")
-            		// this.stopBall();          		           
+                console.log("is past player2")
+                // this.stopBall();          		           
             }
 
             if (this._stopped) {
-            	return;
+                return;
             }
 
             this.updateBallPosition()
@@ -130,20 +130,27 @@
             return ball.mesh.position.z + BALL_RADIUS >= player1.position.z
         }
 
-        isSideCollision() {
-        		let ballX = ball.mesh.position.x,
-        				halfFieldWidth = FIELD_WIDTH / 2;
+        isAlignedWithPaddle(player) {
+            let ballPos = ball.mesh.position,
+                playerPos = player.position;
 
-        		return (ballX + BALL_RADIUS > halfFieldWidth ) || (ballX - BALL_RADIUS < -halfFieldWidth )
+            return (ballPos.x <= playerPos.x && ballPos.x >= playerPos.x - PADDLE_WIDTH / 2) || (ballPos.x >= playerPos.x && ballPos.x <= playerPos.x + PADDLE_WIDTH / 2)
+        }
+
+        isSideCollision() {
+            let ballX = ball.mesh.position.x,
+                halfFieldWidth = FIELD_WIDTH / 2;
+
+            return (ballX + BALL_RADIUS > halfFieldWidth) || (ballX - BALL_RADIUS < -halfFieldWidth)
         }
 
         isPastPaddle1() {
-					// return ball.mesh.position.z + BALL_RADIUS >=  ;
+            // return ball.mesh.position.z + BALL_RADIUS >=  ;
         }
 
         isPastPaddle2() {
-        	// return ball.mesh.position.z + BALL_RADIUS > player2.position.z + 100;
-        }        
+            // return ball.mesh.position.z + BALL_RADIUS > player2.position.z + 100;
+        }
     }
 
     // draw a paddle.
