@@ -91,14 +91,13 @@
             }
 
             if (this.isPastPaddle1()) {
-                console.log("is past player1")
-                // this.stopBall();          
+                this.stopBall();
+                resetGame();
             }
 
             if (this.isPastPaddle2()) {
-
-                console.log("is past player2")
-                // this.stopBall();          		           
+                this.stopBall();
+                resetGame();
             }
 
             if (this._stopped) {
@@ -145,11 +144,11 @@
         }
 
         isPastPaddle1() {
-            // return ball.mesh.position.z + BALL_RADIUS >=  ;
+            return ball.mesh.position.z > player1.position.z;
         }
 
         isPastPaddle2() {
-            // return ball.mesh.position.z + BALL_RADIUS > player2.position.z + 100;
+            return ball.mesh.position.z < player2.position.z;
         }
     }
 
@@ -168,6 +167,12 @@
     let containerMouseMove = function mousemove(e) {
         let mouseX = e.clientX;
         camera.position.x = player1.position.x = -((WIDTH - mouseX) / WIDTH * FIELD_WIDTH) + (FIELD_WIDTH / 2)
+    }
+
+    // game logic.
+    let resetGame = function reset() {
+        ball.mesh.position.set(0, 0, 0);
+        ball._velocity = null;    		
     }
 
     // render animation.
