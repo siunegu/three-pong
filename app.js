@@ -1,6 +1,12 @@
-/* 
+/** 
  * Copyright (c) 2015 Eugenius Lai
  * ThreeJS experiment
+ */
+
+/**
+ * Notes:
+ * - Player logic should probably be refactored into a Player class.
+ * - TODO: increment player score when ball is past a player paddle collision.
  */
 
 'use strict';
@@ -20,7 +26,9 @@
 
     // declare members.
     let container, renderer, camera, mainLight,
-        scene, ball, player1, player2, field, running;
+        scene, ball, player1, player2, field, running,
+
+        player1Score, player2Score;
 
     class Field {
         constructor(fieldGeometry, fieldMaterial) {
@@ -175,6 +183,11 @@
         ball._velocity = null;    		
     }
 
+    // handle player score.
+    let updateScore = function score(playerScore) {
+        playerScore += 1;
+    }()
+
     // render animation.
     let render = function render() {
         requestAnimationFrame(render);
@@ -197,6 +210,7 @@
         scene = new THREE.Scene();
         scene.add(camera);
 
+        // initialize playing field.
         field = new Field(
             new THREE.CubeGeometry(FIELD_WIDTH, 5, FIELD_LENGTH, 1, 1, 1),
             new THREE.MeshLambertMaterial({
@@ -204,6 +218,7 @@
             })
         );
 
+        // initialize the ball object.
         ball = new Ball(
             new THREE.SphereGeometry(BALL_RADIUS, 16, 16),
             new THREE.MeshLambertMaterial({
@@ -211,11 +226,16 @@
             })
         );
 
+        // initialize players.
         player1 = addPaddle();
         player1.position.z = FIELD_LENGTH / 2 - 40;
 
         player2 = addPaddle();
         player2.position.z = -FIELD_LENGTH / 2 + 40;
+
+        // initialize scoreboard.
+        player1Score = document.querySelector('.player1-score').innerHTML,
+        player2Score = document.querySelector('.player1-score').innerHTML;
 
         mainLight = new THREE.HemisphereLight(0xFFFFFF, 0x1c75a1);
         scene.add(mainLight);
