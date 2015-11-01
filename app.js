@@ -99,13 +99,11 @@
             }
 
             if (this.isPastPaddle1()) {
-                this.stopBall();
-                resetGame();
+                stopGame();
             }
 
             if (this.isPastPaddle2()) {
-                this.stopBall();
-                resetGame();
+                stopGame();
             }
 
             if (this._stopped) {
@@ -121,6 +119,8 @@
             // update the ball's position
             ballPos.x += this._velocity.x;
             ballPos.z += this._velocity.z;
+
+            // adds arc to ball-flight
             ballPos.y = -((ballPos.z - 1) * (ballPos.z - 1) / 2000) + 435;
         }
 
@@ -158,6 +158,11 @@
         isPastPaddle2() {
             return ball.mesh.position.z < player2.position.z;
         }
+
+        resetBall() {
+            this.mesh.position.set(0, 0, 0);
+            this._velocity = null;          
+        }        
     }
 
     // draw a paddle.
@@ -171,6 +176,20 @@
         return paddle;
     }
 
+    // handle the CPU.
+    let processCPUPaddle = function cpu() {
+        var ballPos = ball.mesh.position,
+            cpuPos = player2.position;
+        
+        if ( cpuPos.x - 100 > ballPos.x ) {            
+            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 3)
+        }  
+
+        if ( cpuPos.x + 100 > ballPos.x ) {            
+            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 3)
+        }                  
+    }
+
     // handle mouse move.
     let containerMouseMove = function mousemove(e) {
         let mouseX = e.clientX;
@@ -178,9 +197,9 @@
     }
 
     // game logic.
-    let resetGame = function reset() {
-        ball.mesh.position.set(0, 0, 0);
-        ball._velocity = null;    		
+    let stopGame = function stop() {
+        ball.stopBall();
+        ball.resetBall();
     }
 
     // handle player score.
@@ -193,6 +212,7 @@
         requestAnimationFrame(render);
 
         ball.processBallMovement();
+        processCPUPaddle();
 
         renderer.render(scene, camera);
     }
