@@ -1,16 +1,21 @@
- *, 
- *:before,
- *:after {
- 	-webkit-box-sizing: border-box;
- 	-moz-box-sizing: border-box;
- 	box-sizing: border-box;
- }
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
 
- .scoreboard {
- 	position: absolute;
- 	top: 50px;
- 	left: 50px; 	
+body {
+	background: #2b303b;
+}
 
- 	/* placeholder */
- 	background: rgba(255, 0, 0, 0.75);
- }
+.scoreboard {
+	font-family: 'Press Start 2P', cursive;
+	text-align: center;
+
+	position: absolute;
+	height: 60px;
+	width: 200px;
+	padding: 25px 10px 20px;
+	margin: 25px 25px;
+	z-index: 99;
+
+	color: #fff;
+	border: 3px solid #fff;
+	// background: rgba(40, 255, 50, 0.6);
+}

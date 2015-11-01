@@ -28,7 +28,7 @@
     let container, renderer, camera, mainLight,
         scene, ball, player1, player2, field, running,
 
-        player1Score, player2Score;
+        scoreboard, player1Score, player2Score;
 
     class Field {
         constructor(fieldGeometry, fieldMaterial) {
@@ -99,11 +99,15 @@
             }
 
             if (this.isPastPaddle1()) {
+                scoreBy(player2);
                 stopGame();
+                updateScoreBoard();
             }
 
             if (this.isPastPaddle2()) {
+                scoreBy(player1);
                 stopGame();
+                updateScoreBoard();
             }
 
             if (this._stopped) {
@@ -152,11 +156,11 @@
         }
 
         isPastPaddle1() {
-            return ball.mesh.position.z > player1.position.z;
+            return ball.mesh.position.z + BALL_RADIUS > player1.position.z;
         }
 
         isPastPaddle2() {
-            return ball.mesh.position.z < player2.position.z;
+            return ball.mesh.position.z - BALL_RADIUS < player2.position.z;
         }
 
         resetBall() {
@@ -181,12 +185,12 @@
         var ballPos = ball.mesh.position,
             cpuPos = player2.position;
         
-        if ( cpuPos.x - 400 > ballPos.x ) {            
-            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 4)
+        if ( cpuPos.x - FIELD_LENGTH / 2 > ballPos.x ) {            
+            cpuPos.x += Math.min(cpuPos.x - ballPos.x, 5)
         }  
 
-        if ( cpuPos.x + 400 > ballPos.x ) {            
-            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 4)
+        if ( cpuPos.x + FIELD_LENGTH / 2 > ballPos.x ) {            
+            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 5)
         }                  
     }
 
@@ -202,10 +206,20 @@
         ball.resetBall();
     }
 
-    // handle player score.
-    let updateScore = function score(playerScore) {
-        playerScore += 1;
-    }()
+    // increment score.
+    let scoreBy = function addScore(player) {
+        if (player === player1) {
+            player1Score += 1
+        }
+        if (player === player2) {
+            player2Score += 1
+        }        
+    }
+
+    // update the score board display.
+    let updateScoreBoard = function showScore() {
+        scoreboard.innerHTML = 'SCORE: \n' + 'Player1: ' + player1Score + '\n' + 'Player2: ' + player2Score;
+    }
 
     // render animation.
     let render = function render() {
@@ -221,7 +235,7 @@
     let init = function init() {
         renderer = new THREE.WebGLRenderer();
         renderer.setSize(WIDTH, HEIGHT);
-        renderer.setClearColor(0xfcfcfc, 1);
+        renderer.setClearColor(0x2b303b, 1);
         document.body.appendChild(renderer.domElement);
 
         camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
@@ -254,8 +268,10 @@
         player2.position.z = -FIELD_LENGTH / 2 + 40;
 
         // initialize scoreboard.
-        player1Score = document.querySelector('.player1-score').innerHTML,
-        player2Score = document.querySelector('.player1-score').innerHTML;
+        scoreboard = document.querySelector('.scoreboard');
+        player1Score = 0;
+        player2Score = 0;
+        updateScoreBoard();
 
         mainLight = new THREE.HemisphereLight(0xFFFFFF, 0x1c75a1);
         scene.add(mainLight);
