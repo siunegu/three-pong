@@ -181,12 +181,12 @@
         var ballPos = ball.mesh.position,
             cpuPos = player2.position;
         
-        if ( cpuPos.x - 100 > ballPos.x ) {            
-            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 3)
+        if ( cpuPos.x - 400 > ballPos.x ) {            
+            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 4)
         }  
 
-        if ( cpuPos.x + 100 > ballPos.x ) {            
-            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 3)
+        if ( cpuPos.x + 400 > ballPos.x ) {            
+            cpuPos.x -= Math.min(cpuPos.x - ballPos.x, 4)
         }                  
     }
 
